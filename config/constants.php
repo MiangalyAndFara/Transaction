@@ -146,5 +146,5 @@ define('FAIT', 5);
 
 //dev 113
 define('ANNE_DEBUT', 2015); // debut de teko
-
-
+define('IS_ACTIVE', 0); 
+define('IS_DELETED', 1); 

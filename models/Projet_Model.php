@@ -26,8 +26,15 @@ class Projet_Model extends My_Model {
         return $this->update('projet', $object, $where);
     }
 
+    function supprimer($projet) {
+        $where = array('IDPROJET' => $projet->getIdProjet());
+        $object = array('ETAT' => IS_DELETED);
+        return $this->update('projet', $object, $where);
+    }
+
     function getAll() {
-        $rset = $this->read('projet', '*');
+        $where = array('etat' => IS_ACTIVE);
+        $rset = $this->read('projet', '*',$where);
         $rep = array();
         if (isset($rset) && !empty($rset)) {
             foreach ($rset as $rec) {
@@ -45,7 +52,7 @@ class Projet_Model extends My_Model {
     }
 
     function getById($id) {
-        $where = array('projet.IDPROJET' => $id);
+        $where = array('projet.IDPROJET' => $id, 'etat' => IS_ACTIVE);
         $rset = $this->read('projet', '*', $where);
         $rec = $rset[0];
         $rep = new Projet();
@@ -61,7 +68,7 @@ class Projet_Model extends My_Model {
 
     function getClients($id) {
         $where = array('IDPROJET' => $id);
-        $rset = $this->read('client_projet', '*', $where);        
+        $rset = $this->read('client_projet', '*', $where);
         $clients = array();
         if (isset($rset) && !empty($rset)) {
             foreach ($rset as $rec) {
@@ -99,4 +106,5 @@ class Projet_Model extends My_Model {
         }
         return $pourc;
     }
+
 }

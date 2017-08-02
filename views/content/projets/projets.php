@@ -24,7 +24,7 @@
                     <td><?php echo $projet->getDateDebut(); ?></td>
                     <td><?php echo $projet->getDateButoir(); ?></td>
                     <td><?php echo $this->Projet_Model->getPourcentage($projet->getWorkflows()); ?>%</td>
-                    <td><a href="<?php echo site_url() . '/Projet_Controller/view/' . $projet->getIdProjet(); ?>">Voir</a> / <a href="<?php echo site_url() . '/Projet_Controller/edit/' . $projet->getIdProjet(); ?>">Modifier</a></td>
+                    <td><a href="<?php echo site_url() . '/Projet_Controller/view/' . $projet->getIdProjet(); ?>">Voir</a> / <a href="<?php echo site_url() . '/Projet_Controller/edit/' . $projet->getIdProjet(); ?>">Modifier</a> / <a href="javascript:suppr(<?php echo $projet->getIdProjet() ?>)">Supprimer</a></td>
                 </tr>
                 <?php
             }
@@ -39,3 +39,27 @@
         <button> Ajouter </button>   
     </a>
 </div>
+<script>
+    function suppr(id) {
+        var r = confirm("Voulez-vous vraiment supprimer ?");
+        if (r == true) {
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo site_url() . '/Projet_Controller/delete/'; ?>',
+                dataType: 'json',
+                data: {id: id},
+                success: function (data)
+                {
+                    if (data.success) {
+                        var url = '<?php echo site_url() . "/Projet_Controller"; ?>';
+                                location.replace(url);
+                    } else {
+                        alert(data.error);
+                    }
+                }
+            });
+        } else {
+            txt = "You pressed Cancel!";
+        }
+    }
+</script>

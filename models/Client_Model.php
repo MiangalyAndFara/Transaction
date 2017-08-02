@@ -9,7 +9,7 @@ class Client_Model extends My_Model {
     }
 
     function getAll() {
-        $where = array('client.statut' => CLIENT_FIXE);
+        $where = array('client.statut' => CLIENT_FIXE, 'etat' => IS_ACTIVE);
         $join = array('contact' => 'IDCLIENT');
         $rset = $this->read('client', '*', $where, $join);
 
@@ -34,7 +34,7 @@ class Client_Model extends My_Model {
     }
 
     function getById($id = '') {
-        $where = array('client.statut' => CLIENT_FIXE, 'client.idclient' => $id);
+        $where = array('client.statut' => CLIENT_FIXE, 'client.idclient' => $id, 'etat' => IS_ACTIVE);
         $join = array('contact' => 'IDCLIENT');
         $rset = $this->read('client', '*', $where, $join);
 

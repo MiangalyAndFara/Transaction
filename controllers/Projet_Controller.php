@@ -142,10 +142,33 @@ class Projet_Controller extends CI_Controller {
         $statut = $this->session->userdata('statut');
         $identifiant = $this->session->userdata('identifiant');
         if ($identifiant != '' && (in_array($statut, $statutP[CADRE]) || $statut == COMMERCIALE)) {
-            $data['contents'] = 'content/projets/edit';
-            $data['projet'] = $this->Projet_Model->getById($id);
-            $data['titre'] = "Edition projet";
-            $this->load->view('templates/template', $data);
+            if ($id != '') {
+                $data['contents'] = 'content/projets/edit';
+                $data['projet'] = $this->Projet_Model->getById($id);
+                $data['titre'] = "Edition projet";
+                $this->load->view('templates/template', $data);
+            }
+        } else {
+            redirect('Utilisateur_Controller/');
+        }
+    }
+
+    public function delete() {
+        $statutP = $this->Projet_Model->getStatutByPost();
+        $statut = $this->session->userdata('statut');
+        $identifiant = $this->session->userdata('identifiant');
+        if ($identifiant != '' && (in_array($statut, $statutP[CADRE]) || $statut == COMMERCIALE)) {
+                try {
+                    $projet = new Projet();
+                    $projet->setIdProjet($this->input->post('id'));
+                    if ($this->Projet_Model->supprimer($projet)) {
+                        $rep = array('success' => true);
+                        echo json_encode($rep);
+                    }
+                } catch (Exception $e) {
+                    $rep = array('success' => false, 'error' => $e->getMessage());
+                    echo json_encode($rep);
+                }
         } else {
             redirect('Utilisateur_Controller/');
         }

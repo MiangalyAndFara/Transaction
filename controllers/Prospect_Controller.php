@@ -4,6 +4,7 @@
  * dev 113 
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
+include APPPATH . 'third_party/PHPExcel/IOFactory.php';
 
 class Prospect_Controller extends CI_Controller {
 
@@ -11,6 +12,7 @@ class Prospect_Controller extends CI_Controller {
         parent::__construct();
         $this->load->model('Prospect_Model');
         $this->load->library('Client');
+        $this->load->library('Contact');
     }
 
     public function index() {
@@ -53,6 +55,27 @@ class Prospect_Controller extends CI_Controller {
                 $data['contents'] = 'content/prospects/edit';
                 $data['titre'] = $data['prospect']->getNom();
                 $this->load->view('templates/template', $data);
+            }
+        } else {
+            redirect('Utilisateur_Controller/');
+        }
+    }
+
+    public function delete() {
+        $statutP = $this->Prospect_Model->getStatutByPost();
+        $statut = $this->session->userdata('statut');
+        $identifiant = $this->session->userdata('identifiant');
+        if ($identifiant != '' && (in_array($statut, $statutP[CADRE]) || $statut == COMMERCIALE)) {
+            try {
+                $prospect = new Client();
+                $prospect->setIdClient($this->input->post('id'));
+                if ($this->Prospect_Model->supprimer($prospect)) {
+                    $rep = array('success' => true);
+                    echo json_encode($rep);
+                }
+            } catch (Exception $e) {
+                $rep = array('success' => false, 'error' => $e->getMessage());
+                echo json_encode($rep);
             }
         } else {
             redirect('Utilisateur_Controller/');
@@ -146,6 +169,39 @@ class Prospect_Controller extends CI_Controller {
         } else {
             redirect('Utilisateur_Controller/');
         }
+    }
+
+    function exportXls() {
+        $data = $this->Prospect_Model->getAll();
+
+        $sep = ';';
+        $fp = fopen(APPPATH . "views/documents/prospects.csv", "w+");
+        $fin = 'NOM' . $sep . 'NIF' . $sep . 'STAT' . $sep . 'EMAIL' . $sep . 'TELEPHONE' . $sep . 'SKYPE';
+        fputs($fp, $fin);
+        fputs($fp, "\r\n");
+        foreach ($data as $row) {
+
+            $fin = $row->getNom() . $sep . $row->getNif() . $sep . $row->getStat() . $sep . $row->getContact()->getEmail() . $sep . $row->getContact()->getTelephone() . $sep . $row->getContact()->getSkype();
+            fputs($fp, $fin);
+            fputs($fp, "\r\n");
+        }
+        fclose($fp);
+
+        $objReader = PHPExcel_IOFactory::createReader('CSV');
+        $objReader->setDelimiter(";");
+        $objPHPExcel = $objReader->load(APPPATH . "views/documents/prospects.csv");
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save(APPPATH . 'views/documents/prospects.xls');
+
+        $file = APPPATH . 'views/documents/prospects.xls';
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
     }
 
 }

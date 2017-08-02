@@ -29,8 +29,14 @@ class Prospect_Model extends My_Model {
         return false;
     }
 
+    function supprimer($prospect) {
+        $object = array('ETAT' => IS_DELETED);
+        $where = array('IDCLIENT' => $prospect->getIdClient());
+        return $this->update('client', $object, $where);
+    }
+
     function getById($id) {
-        $where = array('client.IDCLIENT' => $id);
+        $where = array('client.IDCLIENT' => $id, 'etat' => IS_ACTIVE);
         $join = array('contact' => 'IDCLIENT');
         $rset = $this->read('client', '*', $where, $join);
 
@@ -52,9 +58,9 @@ class Prospect_Model extends My_Model {
     }
 
     function getAll($bool = '') {
-        $query = $this->db->query('SELECT * FROM `client` LEFT JOIN `contact` ON `client`.`IDCLIENT` = `contact`.`IDCLIENT` WHERE `client`.`statut`=' . EST_PROSPECT);
+        $query = $this->db->query('SELECT * FROM `client` LEFT JOIN `contact` ON `client`.`IDCLIENT` = `contact`.`IDCLIENT` WHERE `client`.`statut`=' . EST_PROSPECT . ' and etat=' . IS_ACTIVE);
         if ($bool) {
-            $query = $this->db->query('SELECT * FROM `client` LEFT JOIN `contact` ON `client`.`IDCLIENT` = `contact`.`IDCLIENT` WHERE `client`.`statut`=' . EST_PROSPECT . ' or `client`.`statut`=' . CLIENT_FIXE);
+            $query = $this->db->query('SELECT * FROM `client` LEFT JOIN `contact` ON `client`.`IDCLIENT` = `contact`.`IDCLIENT` WHERE `client`.`statut`=' . EST_PROSPECT . ' or `client`.`statut`=' . CLIENT_FIXE . ' and etat=' . IS_ACTIVE);
         }
         $rset = $query->result();
         $rep = array();

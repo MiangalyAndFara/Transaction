@@ -4,7 +4,7 @@
  */
 ?>
 <link href="<?php echo base_url() ?>assets/css/style_validation.css" rel="stylesheet">
-<h3> Demande de congé : </h3>
+<h3> Liste des demandes de congé : </h3>
 <h2 id="error"></h2>
 <table border="1" id="workflow">
     <thead>
@@ -46,7 +46,7 @@
 
             </div>
         </div>
-        <button id="myBtn" > Valider condition </button></td>
+        <button id="myBtn" > Valider avec condition </button></td>
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" id="close">&times;</span>

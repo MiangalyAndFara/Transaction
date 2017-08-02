@@ -37,7 +37,6 @@
                     $('#email').val('');
                     $('#telephone').val('');
                     $('#skype').val('');
-                    alert("success");
                 } else {
                     alert(data.error);
                 }

@@ -5,7 +5,7 @@ class Client_Model extends My_Model {
     function __construct() {
         parent::__construct();
         $this->load->library('Client');
-         $this->load->library('Contact');
+        $this->load->library('Contact');
     }
 
     function getAll() {
@@ -38,7 +38,6 @@ class Client_Model extends My_Model {
         $join = array('contact' => 'IDCLIENT');
         $rset = $this->read('client', '*', $where, $join);
 
-        $rep = new Client();
         if (isset($rset) && !empty($rset)) {
             $rec = $rset[0];
             $rep = new Client();
@@ -51,8 +50,9 @@ class Client_Model extends My_Model {
             $contact->setTelephone($rec->TELEPHONE);
             $contact->setSkype($rec->SKYPE);
             $rep->setContact($contact);
+            return $rep;
         }
-        return $rep;
+        return false;
     }
 
 }

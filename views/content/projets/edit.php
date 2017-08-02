@@ -8,10 +8,10 @@
 <input type="text" id="nom" value="<?php echo $projet->getNom(); ?>" />
 <br>
 <label>Date de debut</label>
-<input type="date" id="dateDebut" value="<?php echo $projet->getDateDebut(); ?>" />
+<input type="text" id="dateDebut" value="<?php echo $projet->getDateDebut(); ?>" />
 <br>
 <label>Date butoir</label>
-<input type="date" id="dateButoir" value="<?php echo $projet->getDateButoir(); ?>" />
+<input type="text" id="dateButoir" value="<?php echo $projet->getDateButoir(); ?>" />
 <br>
 <label>Cout</label>
 <input type="number" id="cout" value="<?php echo $projet->getCout(); ?>" />
@@ -48,7 +48,12 @@
 </table>
 <br>
 <button onclick="save()"> Ok </button>
+<script type="text/javascript" src="<?php echo base_url('assets/js/jquery.ui.js'); ?>"></script>
 <script>
+    $(function () {
+        $('#dateDebut').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#dateButoir').datepicker({dateFormat: 'yy-mm-dd'});
+    });
     function ajouter() {
         var sujet = $('#sujet').val();
         var description = $('#description').val();
@@ -86,7 +91,8 @@
             success: function (data)
             {
                 if (data.success) {
-                    alert("success");
+                    var url = '<?php echo site_url() . "/Projet_Controller/view/"; ?>' + data.id;
+                    location.replace(url);
                 } else {
                     alert(data.error);
                 }

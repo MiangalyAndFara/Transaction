@@ -6,8 +6,8 @@
 <h1>Nouveau projet</h1>
 
 <input type="text" id="nom" placeholder="Nom" />
-<input type="date" id="dateDebut" placeholder="Date debut" />
-<input type="date" id="dateButoir" placeholder="Date butoir" />
+<input type="text" id="dateDebut" placeholder="Date debut" />
+<input type="text" id="dateButoir" placeholder="Date butoir" />
 <input type="number" id="cout" placeholder="Cout" />
 <select id="clients" multiple>
     <?php
@@ -20,8 +20,12 @@
 </select> 
 <button onclick="save()"> Ok </button>
 
-
+<script type="text/javascript" src="<?php echo base_url('assets/js/jquery.ui.js'); ?>"></script>
 <script>
+    $(function () {
+        $('#dateDebut').datepicker({dateFormat: 'yy-mm-dd'});
+        $('#dateButoir').datepicker({dateFormat: 'yy-mm-dd'});
+    });
     function save() {
         var nom = $('#nom').val();
         var dateDebut = $('#dateDebut').val();
@@ -36,7 +40,7 @@
             success: function (data)
             {
                 if (data.success) {
-                    var url = '<?php echo site_url() . "/Projet_Controller/edit/"; ?>'+data.id;
+                    var url = '<?php echo site_url() . "/Projet_Controller/edit/"; ?>' + data.id;
                     location.replace(url);
                 } else {
                     alert(data.error);

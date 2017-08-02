@@ -28,16 +28,17 @@
             }
             ?>
         </table>
+    <br>
+    <a href="<?php echo site_url('Prospect_Controller/exportXls'); ?>"> 
+        <button> Exporter en fichier excel </button>   
+    </a>
         <?php
     } else {
-        echo 'Aucun prospect dans votre base de donnees';
+        echo 'Aucun prospect dans votre base de donnees'.'<br>';
     }
     ?>
     <a href="<?php echo site_url('Prospect_Controller/create');?>"> 
         <button> Ajouter </button>   
     </a>
-    <br>
-    <a href="<?php echo site_url('Prospect_Controller/exportXls'); ?>"> 
-        <button> Exporter en fichier excel </button>   
-    </a>
+    
 </div>

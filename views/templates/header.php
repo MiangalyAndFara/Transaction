@@ -16,4 +16,5 @@
                   <a href="<?php echo site_url('Utilisateur_Controller/logout');?>"> 
                                 <button> Logout </button>   
                 </a> 
+        <br>
         <?php } ?>

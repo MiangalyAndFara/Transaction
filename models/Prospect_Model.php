@@ -19,7 +19,7 @@ class Prospect_Model extends My_Model {
     }
 
     function modif($prospect) {
-        $object = array('NIF' => $prospect->getNif(), 'STAT' => $prospect->getStat(), 'NOM' => $prospect->getNom(), 'STATUT' => EST_PROSPECT);
+        $object = array('NIF' => $prospect->getNif(), 'STAT' => $prospect->getStat(), 'NOM' => $prospect->getNom(), 'STATUT' => $prospect->getStatut());
         $where = array('IDCLIENT' => $prospect->getIdClient());
         if ($this->update('client', $object, $where)) {
             $contact = $prospect->getContact();
@@ -34,8 +34,8 @@ class Prospect_Model extends My_Model {
         $join = array('contact' => 'IDCLIENT');
         $rset = $this->read('client', '*', $where, $join);
 
-        $rep = new Client();
         if (isset($rset) && !empty($rset)) {
+            $rep = new Client();
             $rec = $rset[0];
             $rep->setIdClient($rec->IDCLIENT);
             $rep->setNif($rec->NIF);
@@ -46,15 +46,17 @@ class Prospect_Model extends My_Model {
             $contact->setTelephone($rec->TELEPHONE);
             $contact->setSkype($rec->SKYPE);
             $rep->setContact($contact);
+            return $rep;
         }
-        return $rep;
+        return false;
     }
 
-    function getAll() {
-        $where = array('client.statut' => EST_PROSPECT);
-        $join = array('contact' => 'IDCLIENT');
-        $rset = $this->read('client', '*', $where, $join);
-
+    function getAll($bool = '') {
+        $query = $this->db->query('SELECT * FROM `client` LEFT JOIN `contact` ON `client`.`IDCLIENT` = `contact`.`IDCLIENT` WHERE `client`.`statut`=' . EST_PROSPECT);
+        if ($bool) {
+            $query = $this->db->query('SELECT * FROM `client` LEFT JOIN `contact` ON `client`.`IDCLIENT` = `contact`.`IDCLIENT` WHERE `client`.`statut`=' . EST_PROSPECT . ' or `client`.`statut`=' . CLIENT_FIXE);
+        }
+        $rset = $query->result();
         $rep = array();
 
         if (isset($rset) && !empty($rset)) {
